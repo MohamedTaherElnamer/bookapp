@@ -2,6 +2,7 @@ package com.example.taher.listview;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -63,18 +64,23 @@ public class MainActivity extends AppCompatActivity {
 
                             for(int i=0;i<jsonArray.length();i++){
                                 JSONObject employee=jsonArray.getJSONObject(i);
+                                JSONObject x = employee.getJSONObject("volumeInfo");
+                                JSONArray jsonArray2 = x.getJSONArray("authors");
+                                for(int i2=0;i2<jsonArray2.length();i2++){
+                                    String  value=jsonArray2.getString(i2);
 
-                                JSONArray x =employee.getJSONArray("volumeInfo");
 
-                                for(int q=0;q<x.length();q++){
-                                    String s1 =employee.getString("title");
-
-                                    mText.append(s1+"\n\n");
-
+                                   // Log.e("json",i2+"="+jsonArray2);
+                                    mText.append(value+"\n\n");
 
                                 }
 
-                                mText.append("mohamed"+"\n\n");
+
+
+
+
+
+
 
 
                             }
