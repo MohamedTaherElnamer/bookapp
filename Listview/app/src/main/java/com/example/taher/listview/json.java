@@ -1,12 +1,11 @@
 package com.example.taher.listview;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -26,45 +25,28 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.R.layout.simple_expandable_list_item_1;
+/**
+ * Created by Taher on 2/13/2019.
+ */
 
-public class MainActivity extends AppCompatActivity {
-     private RecyclerView recyclerView;
-     RequestQueue mQueue;
-     ListView lstt ;
-    public ArrayList<book> arrayList=new ArrayList<>() ;
-     adapter adapt;
+public class json {
 
+    private String url;
+    private Activity context;
 
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        recyclerView=(RecyclerView) findViewById(R.id.rcy);
-
-        mQueue=Volley.newRequestQueue(this);
-        jsonparse();
+    ArrayList<book> arrayList=new ArrayList<>() ;
 
 
+    public json(String url , Activity context){
 
+        this.url=url;
 
-
-
-
-
-
-
-
-
-
+        this.context=context;
 
     }
-    private void jsonparse(){
+    RequestQueue mQueue = Volley.newRequestQueue(context);
 
-        String url="https://www.googleapis.com/books/v1/volumes?q=Sport&amp;printType=books";
+    public ArrayList<book> jsonparse(){
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -73,36 +55,22 @@ public class MainActivity extends AppCompatActivity {
 
                             JSONArray itemArray = response.getJSONArray("items");
 
-
                             for(int i=0;i<itemArray.length();i++){
 
-
-
                                 JSONObject employee=itemArray.getJSONObject(i);
+
                                 String id = employee.getString("id");
 
+
                                 JSONObject volumeInfoitem = employee.getJSONObject("volumeInfo");
-
                                 String title = volumeInfoitem.getString("title");
-
-
                                 String publisher = volumeInfoitem.getString("publisher");
                                 String publishedDate = volumeInfoitem.getString("publishedDate");
 
-
                                 //double averageRating = volumeInfoitem.getDouble("averageRating");
                                 double averageRating=1;
-                                String description="mm";
-                                /*if (volumeInfoitem.get("description") == null) {
-                                    description="mohamed";
 
-                                }
-
-                                else{
-                                    description= volumeInfoitem.getString("description");
-
-
-                                }*/
+                                String description = volumeInfoitem.getString("description");
 
                                 JSONObject imageLinks = volumeInfoitem.getJSONObject("imageLinks");
                                 String imagelink = imageLinks.getString("smallThumbnail");
@@ -113,23 +81,9 @@ public class MainActivity extends AppCompatActivity {
                                     String  value=authorsArray.getString(i2);
                                     authorarray[i2]=value;
                                 }
-
-
                                 arrayList.add(new book(id,title,authorarray,publisher,publishedDate,averageRating,description,imagelink));
 
-
-
-
                             }
-
-
-                            adapt = new adapter(MainActivity.this,arrayList);
-                            recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-                            recyclerView.setAdapter(adapt);
-
-
-
-
 
 
                         } catch (JSONException e) {
@@ -146,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         });
         mQueue.add(request);
 
-
+        return arrayList;
 
 
 
@@ -155,4 +109,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
+
+
+
 }
+
