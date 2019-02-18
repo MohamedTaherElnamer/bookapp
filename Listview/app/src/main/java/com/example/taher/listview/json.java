@@ -81,7 +81,7 @@ public class json {
                                     String  value=authorsArray.getString(i2);
                                     authorarray[i2]=value;
                                 }
-                                arrayList.add(new book(id,title,authorarray,publisher,publishedDate,averageRating,description,imagelink));
+                                arrayList.add(new book(id,title,authorarray,publisher,publishedDate,description,imagelink));
 
                             }
 

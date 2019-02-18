@@ -1,12 +1,14 @@
 package com.example.taher.listview;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.example.taher.listview.book;
 import java.util.ArrayList;
@@ -23,14 +25,17 @@ public class adapter extends RecyclerView.Adapter<adapter.ViewHolder>{
     public static class ViewHolder extends RecyclerView .ViewHolder{
         public TextView title,author;
         public ImageView photo;
+        RelativeLayout parentlayout;
+
 
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            title=(TextView) itemView.findViewById(R.id.title);
+            title=(TextView) itemView.findViewById(R.id.Title);
             author=(TextView)itemView.findViewById(R.id.author);
             photo=(ImageView) itemView.findViewById(R.id.image);
+            parentlayout=itemView.findViewById(R.id.parent);
 
 
         }
@@ -57,10 +62,34 @@ public class adapter extends RecyclerView.Adapter<adapter.ViewHolder>{
     public void onBindViewHolder(adapter.ViewHolder holder, int position) {
 
 
-        book b = books.get(position);
-        holder.title.setText(b.title);
-        holder.author.setText(b.authors[0]);
-       Picasso.with(context).load(b.imagelink).into(holder.photo);
+        final book b = books.get(position);
+        holder.title.setText(b.getTitle());
+        holder.author.setText(b.getAuthors()[0]);
+       Picasso.with(context).load(b.getImagelink()).into(holder.photo);
+        holder.parentlayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(context,DetailsActivity.class);
+                intent.putExtra("Book_Title",b.getTitle());
+                intent.putExtra("Book_image",b.getImagelink());
+                intent.putExtra("Book_Publisher",b.getPublisher());
+                intent.putExtra("Book_PublishedDate",b.getPublishedDate());
+                intent.putExtra("Book_Description",b.getDescription());
+                if(b.getAuthors().length==1){
+                intent.putExtra("Book_Authors",b.getAuthors()[0]);}
+                else {
+                    intent.putExtra("Book_Authors",b.getAuthors()[0]+" and "+b.getAuthors()[1]);
+
+                }
+
+                intent.putExtra("Book_id",b.getId());
+
+
+
+                context.startActivity(intent);
+            }
+        });
+
 
 
     }

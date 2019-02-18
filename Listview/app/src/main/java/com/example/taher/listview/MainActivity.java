@@ -1,5 +1,7 @@
 package com.example.taher.listview;
 
+import android.content.SharedPreferences;
+import android.support.constraint.solver.SolverVariable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,9 +22,14 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,9 +38,13 @@ import static android.R.layout.simple_expandable_list_item_1;
 public class MainActivity extends AppCompatActivity {
      private RecyclerView recyclerView;
      RequestQueue mQueue;
+     String choice;
      ListView lstt ;
+     String url;
     public ArrayList<book> arrayList=new ArrayList<>() ;
-     adapter adapt;
+    public ArrayList<book> arrayListt=new ArrayList<>() ;
+
+    adapter adapt;
 
 
 
@@ -45,8 +56,45 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView=(RecyclerView) findViewById(R.id.rcy);
 
+        choice=getIntent().getStringExtra("choice");
+
+       //String url="https://www.googleapis.com/books/v1/volumes?q=time&amp;printType=books";
+
+
+
+
+        if(choice.equals("time")){
+
+            url="https://www.googleapis.com/books/v1/volumes?q=time&amp;printType=books";
+
+        }
+        if(choice.equals("sport")){
+             url="https://www.googleapis.com/books/v1/volumes?q=Sport&amp;printType=books";
+
+        }
+
+        /*else if(choice=="love"){
+
+            url="https://www.googleapis.com/books/v1/volumes?q=love&amp;printType=books";
+
+        }
+        else if(choice=="time"){
+            url="https://www.googleapis.com/books/v1/volumes?q=time&amp;printType=books";
+
+        }*/
+
+
+        /*SharedPreferences sharedPreferences =getSharedPreferences("shared preference",MODE_PRIVATE);
+        Gson gson =new Gson();
+        String json = sharedPreferences.getString("task",null);
+        Type type = new TypeToken<ArrayList<book>>() {}.getType();
+        arrayListt=gson.fromJson(json,type);*/
+
         mQueue=Volley.newRequestQueue(this);
-        jsonparse();
+
+        jsonparse(url);
+
+
 
 
 
@@ -62,9 +110,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    private void jsonparse(){
+    private void jsonparse(String url){
 
-        String url="https://www.googleapis.com/books/v1/volumes?q=Sport&amp;printType=books";
+        //String url="https://www.googleapis.com/books/v1/volumes?q=time&amp;printType=books";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -115,17 +163,24 @@ public class MainActivity extends AppCompatActivity {
                                 }
 
 
-                                arrayList.add(new book(id,title,authorarray,publisher,publishedDate,averageRating,description,imagelink));
+                                arrayList.add(new book(id,title,authorarray,publisher,publishedDate,description,imagelink));
 
 
 
 
                             }
-
-
                             adapt = new adapter(MainActivity.this,arrayList);
                             recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
                             recyclerView.setAdapter(adapt);
+                            /*SharedPreferences sharedPreferences =getSharedPreferences("shared preference",MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            Gson gson =new Gson();
+                            String json = gson.toJson(arrayList);
+                            editor.putString("task",json);
+                            editor.apply();*/
+
+
+
 
 
 
